@@ -1,5 +1,5 @@
 import GUI from 'https://cdn.jsdelivr.net/npm/lil-gui@0.19/+esm';
-import { Logis, Brown, Scale, Trig, TD, Changed, } from './model.js';
+import { Brown, Scale, Trig, TD, Changed, } from './model.js';
 import nova from './nova.js';
 import './sc.js';
 
@@ -10,7 +10,7 @@ const lil = {
   x: 1.0,
   y: 1.0,
 }
-const _init_gui = () => {
+const init_gui = () => {
   const gui = new GUI()
   gui.add(lil, 'volume', 0, 1).onChange(v => nova.set_volume(v))
   gui.add(lil, 'reverb', 0, 1)
@@ -20,13 +20,13 @@ const _init_gui = () => {
   gui.close()
 }
 
-const start = document.getElementById('play')
-start.onclick = () => {
+const button = document.getElementById('play')
+button.onclick = () => {
   (async () => {
     await nova.boot();
     nova.set_volume(0.8);
-    start.remove();
-    _init_gui();
+    button.remove();
+    init_gui();
     loop();
   })()
 }

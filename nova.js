@@ -1,6 +1,6 @@
 const HALF_PI = 0.5 * Math.PI
 const TWO_PI =  2.0 * Math.PI
-let context, main, analyser, reverb, compressor, noise, u8audio;
+let context, main, analyser, reverb, compressor, gfx, u8audio;
 
 const loadbuf = async url => {
   let res = await fetch(url);
@@ -15,16 +15,15 @@ const _init_main = () => {
 }
 const _init_reverb = async () => {
   let node = context.createConvolver();
-  let res = await fetch('./vdsp-darkspace.wav');
-  let buf = await res.arrayBuffer();
-  context.decodeAudioData(buf, b => node.buffer = b, e => reject(e));
+  let buf = await loadbuf('vdsp-darkspace.wav');
+  node.buffer = buf;
   return node
 }
 const _init_compressor = () => {
   const node = context.createDynamicsCompressor();
-  node.ratio.value = 12; // 12
-  node.release.value = 0.5;// 0.25
-  node.threshold.value = -26;// -24
+  node.ratio.value = 12;
+  node.release.value = 0.5;
+  node.threshold.value = -26;
   return node
 }
 const _init_noise = () => {
@@ -73,9 +72,10 @@ const _ar_out_chain = (sig, amp, pan, rev, a, r) => {
 let visual;
 const _init_visual = () => {
   const scope = document.getElementById('scope')
-  const gfx = scope.getContext('2d')
-  gfx.lineWidth = 3;
-  gfx.strokeStyle = '#999';
+  const g = scope.getContext('2d')
+  g.lineWidth = 3;
+  g.strokeStyle = '#fff';
+  return g
 }
 const draw_clear = () => gfx.clearRect(0, 0, 512, 512);
 
@@ -91,14 +91,16 @@ const draw_spectra = () => {
 
 const draw_circle = () => {
   analyser.getByteTimeDomainData(u8audio);
-  gfx.clearRect(0, 0, 512, 512);
   gfx.save();
-  gfx.translate(255, 255);
+  gfx.scale(0.5, 0.5);
+  gfx.clearRect(0, 0, 1024, 1024);
+  gfx.translate(512, 512);
   gfx.beginPath();
   for (let i=0; i<512; i++) {
     const x = Math.sin(TWO_PI * i / 512)
     const y = Math.cos(TWO_PI * i / 512)
-    gfx.lineTo(x*u8audio[i], y*u8audio[i]);
+    const amp = u8audio[i] * 1.5;
+    gfx.lineTo(x * amp, y * amp);
   }
   gfx.stroke();
   gfx.restore();
@@ -108,9 +110,9 @@ const draw_circle = () => {
 const boot = async () => {
   main = _init_main();
   compressor = _init_compressor();
-  // noise = _init_noise();
-  // analyser = _init_analyser();
-  // main.connect(analyser);
+  analyser = _init_analyser();
+  gfx = _init_visual();
+  main.connect(analyser);
   main.connect(compressor);
   compressor.connect(context.destination);
   reverb = await _init_reverb();
