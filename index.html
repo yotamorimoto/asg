@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width, initial-scale=1, viewport-fit=cover'>
+	<link rel='icon' type='image/png' sizes='32x32' href='../favicon.png'>
+	<title>ambient sound generator</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      color: white;
+      background-color: #222;
+      font-family: sans-serif;
+    }
+    #play {
+      position: fixed;
+      z-index: 100;
+      width: 100%; height: 100%;
+      top: 0; left: 0; right: 0; bottom: 0;
+      font-size: 20vw;
+      font-style: italic;
+      text-align: center;
+      letter-spacing: -4px;
+      color: white;
+      background-color: black;
+      border: none;
+    }
+    #ambient {
+      position: fixed;
+      z-index: 10;
+      width: 100%; height: 100%;
+      top: 0; left: 0; right: 0; bottom: 0;
+      font-size: 20vw;
+      text-align: center;
+      letter-spacing: -4px;
+      color: white;
+      background-color: rgba(0,0,0,0);
+      border: none;
+    }
+    .glslCanvas {
+      position: fixed;
+      z-index: -10;
+      width: 100%; height: 100%;
+      top: 0; left: 0; right: 0; bottom: 0;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+  </style>
+  <script type='text/javascript' src='GlslCanvas.min.js'></script>
+</head>
+<body>
+  <button id='play'>play</button>
+  <button id='ambient'>AMBIENT</h1>
+  <canvas class='glslCanvas' data-fragment-url='shader.frag'></canvas>
+  <!-- <canvas id='scope' width=512 height=512></canvas> -->
+  <script type='module' src='main.js'></script>
+</body>
+</html>
