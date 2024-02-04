@@ -15,7 +15,7 @@ const _init_main = () => {
 }
 const _init_reverb = async () => {
   let node = context.createConvolver();
-  let res = await fetch('vdsp-darkspace.wav');
+  let res = await fetch('./vdsp-darkspace.wav');
   let buf = await res.arrayBuffer();
   context.decodeAudioData(buf, b => node.buffer = b, e => reject(e));
   return node
